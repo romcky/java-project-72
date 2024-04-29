@@ -1,10 +1,21 @@
 package hexlet.code;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import hexlet.code.model.Url;
+import hexlet.code.repository.BaseRepository;
+import hexlet.code.repository.UrlRepository;
 import io.javalin.Javalin;
 //import io.javalin.rendering.template.JavalinJte;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.stream.Collectors;
 
 
 public class App {
@@ -19,11 +30,46 @@ public class App {
     }
 
     public static Javalin getApp() throws IOException, SQLException {
+
+        //load dataSource
+        HikariConfig hikariConfig = new HikariConfig();
+        String jdbcUrl = System.getenv().getOrDefault("JDBC_DATABASE_URL",
+                "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
+        hikariConfig.setJdbcUrl(jdbcUrl);
+        HikariDataSource dataSource = new HikariDataSource(hikariConfig);
+        String sql = readResourceFile("schema.sql");
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
+        BaseRepository.dataSource = dataSource;
+
+        //create javalin
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
             //config.fileRenderer(new JavalinJte());
         });
-        app.get("/", ctx -> ctx.result("Hello, Wold!"));
+
+        app.get("/", ctx -> {
+            //test repo
+            UrlRepository.save(Url.builder().name("TEST").build());
+            StringBuilder test = new StringBuilder();
+            for (Url url : UrlRepository.getEntities()) {
+                test.append("id = ").append(url.getId());
+                test.append("name = ").append(url.getName());
+                test.append("created_at = ").append(url.getCreatedAt());
+                test.append("\n");
+            }
+            ctx.result(test.toString());
+        });
+
         return app;
+    }
+
+    public static String readResourceFile(String fileName) throws IOException {
+        var inputStream = App.class.getClassLoader().getResourceAsStream(fileName);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+            return reader.lines().collect(Collectors.joining("\n"));
+        }
     }
 }
