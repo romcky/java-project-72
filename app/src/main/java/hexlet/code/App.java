@@ -2,10 +2,16 @@ package hexlet.code;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import gg.jte.ContentType;
+import gg.jte.TemplateEngine;
+import gg.jte.resolve.ResourceCodeResolver;
+import hexlet.code.controller.RootController;
 import hexlet.code.model.Url;
 import hexlet.code.repository.BaseRepository;
 import hexlet.code.repository.UrlRepository;
+import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
+import io.javalin.rendering.template.JavalinJte;
 //import io.javalin.rendering.template.JavalinJte;
 
 import java.io.BufferedReader;
@@ -47,10 +53,13 @@ public class App {
         //create javalin
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
+            config.fileRenderer(new JavalinJte(createTemplateEngine()));
             //config.fileRenderer(new JavalinJte());
         });
 
-        app.get("/", ctx -> {
+        app.get(NamedRoutes.rootPath(), RootController::index);
+
+        app.get("/test", ctx -> {
             //test repo
             UrlRepository.save(Url.builder().name("TEST").build());
             StringBuilder test = new StringBuilder();
@@ -72,4 +81,12 @@ public class App {
             return reader.lines().collect(Collectors.joining("\n"));
         }
     }
+
+    public static TemplateEngine createTemplateEngine() {
+        ClassLoader classLoader = App.class.getClassLoader();
+        ResourceCodeResolver codeResolver = new ResourceCodeResolver("templates", classLoader);
+        TemplateEngine templateEngine = TemplateEngine.create(codeResolver, ContentType.Html);
+        return templateEngine;
+    }
+
 }
