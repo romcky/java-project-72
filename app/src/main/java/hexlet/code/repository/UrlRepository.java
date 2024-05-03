@@ -21,7 +21,8 @@ public class UrlRepository extends BaseRepository {
              PreparedStatement preparedStatement =
                      connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, url.getName());
-            preparedStatement.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
+            url.setCreatedAt(LocalDateTime.now());
+            preparedStatement.setTimestamp(2, Timestamp.valueOf(url.getCreatedAt()));
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -55,6 +56,26 @@ public class UrlRepository extends BaseRepository {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement =
                      connection.prepareStatement(sql)) {
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return Optional.of(Url.builder()
+                        .id(resultSet.getLong("id"))
+                        .name(resultSet.getString("name"))
+                        .createdAt(resultSet.getTimestamp("created_at").toLocalDateTime())
+                        .build());
+            } else {
+                return Optional.empty();
+            }
+        }
+    }
+
+    public static Optional<Url> findByName(String name) throws SQLException {
+        String sql = "SELECT * FROM urls WHERE name = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement =
+                     connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return Optional.of(Url.builder()

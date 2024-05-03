@@ -1,7 +1,9 @@
 @import gg.jte.Content
 @import hexlet.code.util.NamedRoutes
+@import hexlet.code.dto.BasePage
 
 @param Content content
+@param BasePage page = null
 
 <!DOCTYPE HTML>
 <html lang="ru">
@@ -16,7 +18,18 @@
                 <li class="nav-item">
                     <a class="nav-link" href="${NamedRoutes.rootPath()}">Главная</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="${NamedRoutes.urlsPath()}">Сайты</a>
+                </li>
             </ul>
+        </div>
+
+        <div>
+            @if (page != null && page.getFlash() != null)
+                <div class="alert">
+                    ${page.getFlash()}
+                </div>
+            @endif
         </div>
 
         <main>
