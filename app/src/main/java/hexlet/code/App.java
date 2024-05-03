@@ -40,9 +40,14 @@ public class App {
 
         //load dataSource
         HikariConfig hikariConfig = new HikariConfig();
-        String jdbcUrl = System.getenv().getOrDefault("JDBC_DATABASE_URL",
-                "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
-        hikariConfig.setJdbcUrl(jdbcUrl);
+        hikariConfig.setJdbcUrl("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
+
+        if (System.getenv().containsKey("JDBC_DATABASE_URL")) {
+            hikariConfig.setJdbcUrl(System.getenv().get("JDBC_DATABASE_URL"));
+            hikariConfig.setUsername(System.getenv().get("DATABASE_USERNAME"));
+            hikariConfig.setPassword(System.getenv().get("DATABASE_PASSWORD"));
+        }
+
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
         String sql = readResourceFile("schema.sql");
         try (Connection connection = dataSource.getConnection();
