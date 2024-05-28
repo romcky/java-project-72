@@ -41,3 +41,10 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
