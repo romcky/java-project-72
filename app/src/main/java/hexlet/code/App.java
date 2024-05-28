@@ -6,14 +6,13 @@ import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
 import hexlet.code.controller.RootController;
+import hexlet.code.controller.UrlCheckController;
 import hexlet.code.controller.UrlController;
-import hexlet.code.model.Url;
 import hexlet.code.repository.BaseRepository;
-import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
-//import io.javalin.rendering.template.JavalinJte;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -67,19 +66,9 @@ public class App {
         app.post(NamedRoutes.urlsPath(), UrlController::create);
         app.get(NamedRoutes.urlsPath(), UrlController::index);
         app.get(NamedRoutes.urlPath("{id}"), UrlController::show);
+        app.post(NamedRoutes.urlChecksPath("{id}"), UrlCheckController::create);
 
-        app.get("/test", ctx -> {
-            //test repo
-            UrlRepository.save(Url.builder().name("TEST").build());
-            StringBuilder test = new StringBuilder();
-            for (Url url : UrlRepository.getEntities()) {
-                test.append("id = ").append(url.getId());
-                test.append("name = ").append(url.getName());
-                test.append("created_at = ").append(url.getCreatedAt());
-                test.append("\n");
-            }
-            ctx.result(test.toString());
-        });
+
 
         return app;
     }

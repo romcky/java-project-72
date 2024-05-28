@@ -1,3 +1,4 @@
+@import hexlet.code.model.UrlCheck
 @import hexlet.code.util.NamedRoutes
 @import hexlet.code.dto.UrlPage
 
@@ -9,6 +10,7 @@
         <h2>Обзор</h2>
         <div>
             @if (page.getUrl() != null)
+
                 <table class="table">
                     <tbody>
                     <tr>
@@ -23,8 +25,44 @@
                         <td>Добавлена</td>
                         <td>${page.getUrl().getCreatedAt().toString()}</td>
                     </tr>
+                    <tr>
+                        <td>Проверок</td>
+                        <td>${page.getUrlChecks().size()}</td>
+                    </tr>
                     </tbody>
                 </table>
+
+                <h3>Проверки:</h3>
+
+                @if (page.getUrlChecks() != null)
+                <table class="table">
+                    <thead>
+                        <th>ID</th>
+                        <th>Код ответа</th>
+                        <th>Заголовок</th>
+                        <th>Оглавление</th>
+                        <th>Описание</th>
+                        <th>Дата проверки</th>
+                    </thead>
+                    <tbody>
+                    @for (UrlCheck urlCheck : page.getUrlChecks())
+                        <tr>
+                            <td>${urlCheck.getId()}</td>
+                            <td>${urlCheck.getStatusCode()}</td>
+                            <td>${urlCheck.getTitle()}</td>
+                            <td>${urlCheck.getH1()}</td>
+                            <td>${urlCheck.getDescription()}</td>
+                            <td>${urlCheck.getCreatedAt().toString()}</td>
+                        </tr>
+                    @endfor
+                    </tbody>
+                </table>
+                @endif
+
+
+                <form method="POST" action="${NamedRoutes.urlChecksPath(page.getUrl().getId())}">
+                    <input type="submit" value="Проверить">
+                </form>
             @endif
         </div>
     `

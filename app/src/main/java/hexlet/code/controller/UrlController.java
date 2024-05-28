@@ -3,6 +3,7 @@ package hexlet.code.controller;
 import hexlet.code.dto.UrlPage;
 import hexlet.code.dto.UrlsPage;
 import hexlet.code.model.Url;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
@@ -52,8 +53,9 @@ public class UrlController {
         try {
             Long id = context.pathParamAsClass("id", Long.class).get();
             page.setUrl(UrlRepository.findById(id).orElseThrow(Exception::new));
+            page.setUrlChecks(UrlCheckRepository.getEntitiesByUrlId(id));
         } catch (SQLException e) {
-            page.setFlash("Ошибка в работе СУБД");
+            page.setFlash("Ошибка в работе СУБД: " + e.getMessage());
         } catch (Exception e) {
             page.setFlash("Указан несуществующий id");
         } finally {

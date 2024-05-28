@@ -49,7 +49,7 @@ public class AppTest {
     }
 
     @Test
-    public void testCreateUrlRith() {
+    public void testCreateUrlRight() {
         JavalinTest.test(app, (server, client) -> {
             var createResponse = client.post(NamedRoutes.urlsPath(), "url=https://test.com");
             Assertions.assertEquals(createResponse.code(), 200);
