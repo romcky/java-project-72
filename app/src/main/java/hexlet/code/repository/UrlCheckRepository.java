@@ -9,8 +9,11 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UrlCheckRepository extends BaseRepository {
     public static void save(UrlCheck check) throws SQLException {
@@ -57,4 +60,21 @@ public class UrlCheckRepository extends BaseRepository {
             return result;
         }
     }
+
+    public static Map<Long, LocalDateTime> getDateTimeLastChecks() throws SQLException {
+        String sql = "SELECT * FROM url_checks ORDER BY created_at";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement =
+                     connection.prepareStatement(sql)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Map<Long, LocalDateTime> result = new HashMap<>();
+            while (resultSet.next()) {
+                result.put(resultSet.getLong("url_id"),
+                        resultSet.getTimestamp("created_at").toLocalDateTime());
+            }
+            return result;
+        }
+    }
+
+
 }

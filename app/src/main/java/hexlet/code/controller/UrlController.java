@@ -41,6 +41,7 @@ public class UrlController {
         UrlsPage page = new UrlsPage();
         try {
             page.setUrls(UrlRepository.getEntities());
+            page.setLastChecks(UrlCheckRepository.getDateTimeLastChecks());
         } catch (SQLException e) {
             page.setFlash("Ошибка в работе СУБД");
         } finally {
