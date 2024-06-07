@@ -56,10 +56,11 @@ public class UrlController {
             page.setUrl(UrlRepository.findById(id).orElseThrow(Exception::new));
             page.setUrlChecks(UrlCheckRepository.getEntitiesByUrlId(id));
         } catch (SQLException e) {
-            page.setFlash("Ошибка в работе СУБД: " + e.getMessage());
+            context.sessionAttribute("flash", "Ошибка в работе СУБД: " + e.getMessage());
         } catch (Exception e) {
-            page.setFlash("Указан несуществующий id");
+            context.sessionAttribute("flash", "Указан несуществующий id");
         } finally {
+            page.setFlash(context.consumeSessionAttribute("flash"));
             context.render("urls/show.jte", model("page", page));
         }
     }
