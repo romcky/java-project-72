@@ -13,6 +13,7 @@
         <title>Анализатор страниц</title>
     </head>
     <body>
+        <nav class="navbar navbar-expand-lg">
         <div>
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -23,6 +24,7 @@
                 </li>
             </ul>
         </div>
+        </nav>
 
         <div>
             @if (page != null && page.getFlash() != null)
