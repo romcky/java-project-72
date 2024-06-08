@@ -1,12 +1,14 @@
 package hexlet.code;
 
 import hexlet.code.model.Url;
+import hexlet.code.repository.BaseRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +43,14 @@ public class AppTest {
     public final void setUp() throws IOException, SQLException {
         app = App.getApp();
     }
+
+    @AfterEach
+    public final void closeBase() {
+        if (BaseRepository.dataSource != null) {
+            BaseRepository.dataSource.close();
+        }
+    }
+
 
     @Test
     public void testMainPage() {
