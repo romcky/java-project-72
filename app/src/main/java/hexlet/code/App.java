@@ -42,7 +42,7 @@ public class App {
         hikariConfig.setJdbcUrl("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
 
         if (System.getenv().containsKey("JDBC_DATABASE_URL")
-                && System.getenv().containsKey("DATABASE_USERNAME") && System.getenv().containsKey("PASSWORD")) {
+                && System.getenv().containsKey("DATABASE_USERNAME") && System.getenv().containsKey("DATABASE_PASSWORD")) {
             hikariConfig.setJdbcUrl(System.getenv().get("JDBC_DATABASE_URL"));
             hikariConfig.setUsername(System.getenv().get("DATABASE_USERNAME"));
             hikariConfig.setPassword(System.getenv().get("DATABASE_PASSWORD"));

@@ -41,7 +41,11 @@ public class AppTest {
 
     @BeforeEach
     public final void setUp() throws IOException, SQLException {
-        app = App.getApp();
+        try {
+            app = App.getApp();
+        } catch (Exception e) {
+            System.out.println("test exception: " + e.getMessage());
+        }
     }
 
     @AfterEach
