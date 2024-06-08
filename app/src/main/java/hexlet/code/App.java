@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.stream.Collectors;
@@ -41,10 +40,7 @@ public class App {
         //load dataSource
         HikariConfig hikariConfig = new HikariConfig();
         if (System.getenv().containsKey("JDBC_DATABASE_URL")) {
-            DriverManager.registerDriver(new org.postgresql.Driver());
             hikariConfig.setJdbcUrl(System.getenv().get("JDBC_DATABASE_URL"));
-            hikariConfig.setUsername(System.getenv().get("DATABASE_USERNAME"));
-            hikariConfig.setPassword(System.getenv().get("DATABASE_PASSWORD"));
         } else {
             hikariConfig.setJdbcUrl("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
         }
