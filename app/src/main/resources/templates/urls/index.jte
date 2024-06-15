@@ -27,6 +27,7 @@
                                     <th>Ссылка</th>
                                     <th>Добавлена</th>
                                     <th>Последняя проверка</th>
+                                    <th>Статус</th>
                                 </thead>
                                  <tbody>
                                  @for (Url url : page.getUrls())
@@ -39,6 +40,13 @@
                                                 Проверок не было
                                             @else
                                                 ${page.getLastChecks().get(url.getId()).toString()}
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if (page.getLastStatus().get(url.getId()) == null)
+                                                Проверок не было
+                                            @else
+                                                ${page.getLastStatus().get(url.getId()).toString()}
                                             @endif
                                         </td>
                                     </tr>

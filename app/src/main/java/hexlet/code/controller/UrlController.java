@@ -27,12 +27,13 @@ public class UrlController {
                 UrlRepository.save(new Url(link));
                 context.sessionAttribute("flash", "Ссылка успешно добавлена");
                 context.consumeSessionAttribute("link");
+                context.redirect(NamedRoutes.urlsPath());
             }
         } catch (SQLException e) {
             context.sessionAttribute("flash", "Ошибка в работе СУБД");
+            context.redirect(NamedRoutes.rootPath());
         } catch (Exception e) {
             context.sessionAttribute("flash", "Неверная ссылка");
-        } finally {
             context.redirect(NamedRoutes.rootPath());
         }
     }
@@ -42,6 +43,7 @@ public class UrlController {
         try {
             page.setUrls(UrlRepository.getEntities());
             page.setLastChecks(UrlCheckRepository.getDateTimeLastChecks());
+            page.setLastStatus(UrlCheckRepository.getStatusLastChecks());
         } catch (SQLException e) {
             page.setFlash("Ошибка в работе СУБД");
         } finally {

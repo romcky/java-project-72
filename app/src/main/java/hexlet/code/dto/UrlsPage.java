@@ -13,4 +13,5 @@ import java.util.Map;
 public class UrlsPage extends BasePage {
     private List<Url> urls;
     private Map<Long, LocalDateTime> lastChecks;
+    private Map<Long, Integer> lastStatus;
 }

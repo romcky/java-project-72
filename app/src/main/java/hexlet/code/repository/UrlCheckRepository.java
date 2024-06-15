@@ -76,5 +76,19 @@ public class UrlCheckRepository extends BaseRepository {
         }
     }
 
+    public static Map<Long, Integer> getStatusLastChecks() throws SQLException {
+        String sql = "SELECT * FROM url_checks ORDER BY created_at";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement =
+                     connection.prepareStatement(sql)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Map<Long, Integer> result = new HashMap<>();
+            while (resultSet.next()) {
+                result.put(resultSet.getLong("url_id"),
+                        resultSet.getInt("status_code"));
+            }
+            return result;
+        }
+    }
 
 }
