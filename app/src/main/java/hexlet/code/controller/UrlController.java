@@ -23,6 +23,7 @@ public class UrlController {
                     + (linkUrl.getPort() != -1 ? ":" + linkUrl.getPort() : "");
             if (UrlRepository.findByName(link).isPresent()) {
                 context.sessionAttribute("flash", "Ссылка уже содержится");
+                context.redirect(NamedRoutes.rootPath());
             } else {
                 UrlRepository.save(new Url(link));
                 context.sessionAttribute("flash", "Ссылка успешно добавлена");
